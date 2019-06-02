@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
 	str := os.Args[1]
-	var finalStr string
+	var finalStrBuilder strings.Builder
 	inc := 1
 
 	for i := 0; i < len(str); i++ {
@@ -16,14 +17,15 @@ func main() {
 		if i+1 < len(str) && str[i] == str[i+1] {
 			inc++
 		} else if inc > 1 {
-			finalStr += string(str[i-1]) + strconv.Itoa(inc)
+			finalStrBuilder.WriteString(string(str[i-1]))
+			finalStrBuilder.WriteString(strconv.Itoa(inc))
 			inc = 1
 		} else {
-			finalStr += string(str[i])
+			finalStrBuilder.WriteString(string(str[i]))
 		}
 
 	}
 
-	fmt.Print(finalStr)
+	fmt.Print(finalStrBuilder.String())
 
 }
