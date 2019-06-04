@@ -5,6 +5,8 @@ import (
 	"net/url"
 )
 
+const baseDomain = "http://t-link.com"
+
 type Shortener interface {
 	Shorten(url string) string
 	Resolve(url string) string
@@ -15,9 +17,16 @@ type LinkHolder struct {
 }
 
 func (link LinkHolder) Shorten(urlStr string) string {
-	parsedUrl, _ := url.Parse(urlStr)
 	shortPath, _ := shortid.Generate()
+	parsedUrl, _ := url.Parse(baseDomain)
 	parsedUrl.Path = shortPath
+
+	_, ok := link.Links[parsedUrl.String()]
+
+	if ok {
+		return Shorten(link, urlStr)
+	}
+
 	link.Links[parsedUrl.String()] = urlStr
 	return parsedUrl.String()
 }
