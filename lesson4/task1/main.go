@@ -3,21 +3,16 @@ package main
 import (
 	"fmt"
 	"otus/lesson4/task1/api"
-	"strconv"
+	"reflect"
 )
 
 func main() {
 
-	elems := api.Container{12, 32, 21321, 43, "", false}
+	elems := api.Container{12, 32, 21321, 43, 87}
 
 	max := api.Max(func(a interface{}, b interface{}) bool {
-
-		aStr := fmt.Sprintf("%d", a)
-		valA, _ := strconv.ParseInt(aStr, 10, 32)
-
-		bStr := fmt.Sprintf("%d", b)
-		valB, _ := strconv.ParseInt(bStr, 10, 32)
-
+		valA := reflect.ValueOf(a).Int()
+		valB := reflect.ValueOf(b).Int()
 		return valA > valB
 
 	}, elems)
