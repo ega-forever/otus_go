@@ -1,38 +1,8 @@
-package api
-
-type QueueItem struct {
-	prevItem *QueueItem
-	Value    int
-	nextItem *QueueItem
-}
+package queue
 
 type Queue struct {
 	head *QueueItem
 	tail *QueueItem
-}
-
-type Iterator struct {
-	current *QueueItem
-	queue   *Queue
-}
-
-func (iterator *Iterator) HasNext() bool {
-	return iterator.current != nil && iterator.current.nextItem != nil
-}
-
-func (iterator *Iterator) GetNext() *QueueItem {
-
-	if !iterator.HasNext() {
-		return nil
-	}
-
-	iterator.current = iterator.current.nextItem
-
-	return iterator.current
-}
-
-func (iterator *Iterator) GetCurrent() *QueueItem {
-	return iterator.current
 }
 
 func (queue *Queue) GetIterator() Iterator {

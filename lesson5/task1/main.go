@@ -2,28 +2,37 @@ package main
 
 import (
 	"fmt"
-	"otus/lesson5/task1/api"
+	"otus/lesson5/task1/queue"
 )
 
 func main() {
 
-	queue := api.Queue{}
+	superQueue := queue.Queue{}
 
-	queue.Add(12)
-	queue.Add(14)
-	queue.Add(16)
-	queue.Add(18)
+	superQueue.Add(12)
+	superQueue.Add(14)
+	superQueue.Add(16)
+	superQueue.Add(18)
 
-	queue.Remove(0)
+	superQueue.Remove(0)
 
-	fmt.Println(queue.Get(0).Value)
-	fmt.Println(queue.Get(1).Value)
-	fmt.Println(queue.Get(2).Value)
-	fmt.Println(queue.Len())
+	fmt.Println(superQueue.Get(0).Value)
+	fmt.Println(superQueue.Get(1).Value)
+	fmt.Println(superQueue.Get(2).Value)
+	fmt.Println("length:", superQueue.Len())
 
-	iterator := queue.GetIterator()
+	iterator := superQueue.GetIterator()
+
+	fmt.Println("iterating up")
 	fmt.Println(iterator.GetCurrent().Value)
-	fmt.Println(iterator.GetNext().Value)
-	fmt.Println(iterator.HasNext())
+	for iterator.HasNext() {
+		fmt.Println(iterator.GetNext().Value)
+	}
+
+	fmt.Println("iterating down")
+	fmt.Println(iterator.GetCurrent().Value)
+	for iterator.HasPrev() {
+		fmt.Println(iterator.GetPrev().Value)
+	}
 
 }
