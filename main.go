@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	tasks := make([]func() error, 4)
+	tasks := make([]api.Jobfn, 4)
 
 	tasks[0] = func() error {
 
@@ -19,24 +19,26 @@ func main() {
 
 	tasks[1] = func() error {
 
+		fmt.Println("processing task #1")
 		time.Sleep(10 * time.Second)
 		return errors.New("timeout error33")
 	}
 
 	tasks[2] = func() error {
 
+		fmt.Println("processing task #2")
 		time.Sleep(10 * time.Second)
 		return errors.New("timeout error44")
 	}
 
 	tasks[3] = func() error {
 
+		fmt.Println("processing task #3")
 		time.Sleep(10 * time.Second)
 		return errors.New("timeout error55")
 	}
 
-	pr := api.TaskProcessor{Tasks: tasks, AllowedErrorsAmount: 1, AllowedConcurrentAmount: 2}
-	prResults := pr.Process()
-	fmt.Println(prResults)
-
+	workerPool := api.NewWorkerPool(tasks, 1, 1)
+	jobErrors := workerPool.Process()
+	fmt.Println(jobErrors)
 }
