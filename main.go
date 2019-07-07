@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"otus/lesson6/task1/api"
+	"otus/api"
 )
 
 func main() {
