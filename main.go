@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"otus/lesson5/task1/queue"
+	"otus/queue"
 )
 
 func main() {
