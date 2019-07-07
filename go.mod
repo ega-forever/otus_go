@@ -1,4 +1,4 @@
-module otus/lesson9/task1
+module github.com/ega-forever/otus_go
 
 go 1.12
 
