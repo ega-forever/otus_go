@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"otus/lesson8/task1/api"
+	"otus/api"
 	"time"
 )
 
