@@ -1,8 +1,7 @@
 package main
 
 import (
-	"github.com/ega-forever/otus_go/internal/middleware"
-	"github.com/ega-forever/otus_go/internal/routes"
+	"github.com/ega-forever/otus_go/internal"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -33,9 +32,9 @@ func main() {
 
 	r := mux.NewRouter()
 	r.Use(mux.CORSMethodMiddleware(r))
-	r.Use(middleware.LoggingMiddleware)
+	r.Use(internal.LoggingMiddleware)
 
-	routes.SetProductRouter(r)
+	internal.SetProductRouter(r)
 
 	httpError := http.ListenAndServe(":"+strconv.Itoa(port), r)
 

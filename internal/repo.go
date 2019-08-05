@@ -1,16 +1,15 @@
-package repository
+package internal
 
 import (
-	"github.com/ega-forever/otus_go/internal/models"
 	"sync"
 )
 
-var products = make(map[int]models.Product, 0)
+var products = make(map[int]Product, 0)
 var productLockMutex = &sync.Mutex{}
 
-func GetProducts() []models.Product {
+func GetProducts() []Product {
 
-	arr := make([]models.Product, len(products))
+	arr := make([]Product, len(products))
 
 	index := 0
 	for _, val := range products {
@@ -21,7 +20,7 @@ func GetProducts() []models.Product {
 	return arr
 }
 
-func AddProduct(product models.Product) *models.Product {
+func AddProduct(product Product) *Product {
 	productLockMutex.Lock()
 	products[product.Id] = product
 	productLockMutex.Unlock()
