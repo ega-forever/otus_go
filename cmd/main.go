@@ -36,10 +36,10 @@ func main() {
 
 	internal.SetProductRouter(r)
 
-	httpError := http.ListenAndServe(":"+strconv.Itoa(port), r)
+	err := http.ListenAndServe(":"+strconv.Itoa(port), r)
 
-	if httpError != nil {
-		log.Panic(httpError)
+	if err != nil {
+		log.Panic(err)
 	}
 
 }
