@@ -1,12 +1,11 @@
 package main
 
 import (
-	"github.com/ega-forever/otus_go/internal"
+	"github.com/ega-forever/otus_go/internal/app"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"net/http"
-	"strconv"
 )
 
 func init() {
@@ -18,25 +17,32 @@ func init() {
 	_ = viper.ReadInConfig()
 	viper.AutomaticEnv()
 
-	logLevel := viper.GetInt("LOG_LEVEL")
+	logLevel := viper.GetString("LOG_LEVEL")
 
 	log.SetFormatter(&log.JSONFormatter{})
-	log.SetLevel(log.Level(uint32(logLevel)))
+
+	parsedLevel, err := log.ParseLevel(logLevel)
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	log.SetLevel(parsedLevel)
 
 }
 
 func main() {
 
-	port := viper.GetInt("PORT")
+	port := viper.GetString("PORT")
 	log.Info(port)
 
 	r := mux.NewRouter()
 	r.Use(mux.CORSMethodMiddleware(r))
-	r.Use(internal.LoggingMiddleware)
+	r.Use(app.LoggingMiddleware)
 
-	internal.SetProductRouter(r)
+	app.SetProductRouter(r)
 
-	err := http.ListenAndServe(":"+strconv.Itoa(port), r)
+	err := http.ListenAndServe(":"+port, r)
 
 	if err != nil {
 		log.Panic(err)
