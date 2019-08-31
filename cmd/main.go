@@ -17,7 +17,7 @@ func init() {
 	viper.SetDefault("LOG_LEVEL", 30)
 	viper.SetDefault("RPC_URI", "127.0.0.1:8081")
 
-	_ = viper.ReadInConfig()
+	viper.ReadInConfig()
 	viper.AutomaticEnv()
 
 	logLevel := viper.GetInt("LOG_LEVEL")
@@ -27,8 +27,6 @@ func init() {
 
 func main() {
 
-	// todo init grpc
-
 	rpcUri := viper.GetString("RPC_URI")
 	listen, err := net.Listen("tcp", rpcUri)
 
@@ -37,7 +35,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	srv := &internal.EventService{}
+	srv := internal.NewEventService()
 
 	eventpb.RegisterEventServiceServer(grpcServer, srv)
 

@@ -8,58 +8,63 @@ import (
 )
 
 type EventService struct {
+	events map[int64]event.Event
 }
 
-var events = make(map[int64]event.Event, 0)
+func NewEventService() *EventService {
+	es := EventService{}
+	es.events = make(map[int64]event.Event, 0)
+	return &es
+}
 
-func (*EventService) CreateEvent(ctx context.Context, req *event.CreateEventReq) (*event.CreateEventRes, error) {
+func (es *EventService) CreateEvent(ctx context.Context, req *event.CreateEventReq) (*event.CreateEventRes, error) {
 
-	req.Event.Id = int64(len(events) + 1)
+	req.Event.Id = int64(len(es.events) + 1)
 
-	events[req.Event.Id] = *req.Event
+	es.events[req.Event.Id] = *req.Event
 	res := event.CreateEventRes{Event: req.Event}
 	return &res, nil
 }
-func (*EventService) UpdateEvent(ctx context.Context, req *event.UpdateEventReq) (*event.UpdateEventRes, error) {
+func (es *EventService) UpdateEvent(ctx context.Context, req *event.UpdateEventReq) (*event.UpdateEventRes, error) {
 
-	ev := events[req.Event.Id]
-	if ev.Id == 0 {
+	_, ok := es.events[req.Event.Id]
+	if !ok {
 		return nil, status.Error(codes.NotFound, "record not found")
 	}
 
-	events[req.Event.Id] = *req.Event
+	es.events[req.Event.Id] = *req.Event
 
 	res := event.UpdateEventRes{Event: req.Event}
 	return &res, nil
 }
-func (*EventService) DeleteEvent(ctx context.Context, req *event.DeleteEventReq) (*event.DeleteEventRes, error) {
+func (es *EventService) DeleteEvent(ctx context.Context, req *event.DeleteEventReq) (*event.DeleteEventRes, error) {
 
-	ev := events[req.Id]
-	if ev.Id == 0 {
+	_, ok := es.events[req.Id]
+	if !ok {
 		return nil, status.Error(codes.NotFound, "record not found")
 	}
 
-	delete(events, req.Id)
+	delete(es.events, req.Id)
 
 	res := event.DeleteEventRes{Id: req.Id}
 	return &res, nil
 }
-func (*EventService) GetEvent(ctx context.Context, req *event.GetEventReq) (*event.GetEventRes, error) {
+func (es *EventService) GetEvent(ctx context.Context, req *event.GetEventReq) (*event.GetEventRes, error) {
 
-	ev := events[req.Id]
+	ev, ok := es.events[req.Id]
 
-	if ev.Id == 0 {
+	if !ok {
 		return nil, status.Error(codes.NotFound, "record not found")
 	}
 
 	res := event.GetEventRes{Event: &ev}
 	return &res, nil
 }
-func (*EventService) ListEvents(ctx context.Context, req *event.ListEventReq) (*event.ListEventRes, error) {
+func (es *EventService) ListEvents(ctx context.Context, req *event.ListEventReq) (*event.ListEventRes, error) {
 
 	eventsArr := make([]*event.Event, 0)
 
-	for _, ev := range events {
+	for _, ev := range es.events {
 		eventsArr = append(eventsArr, &ev)
 	}
 
