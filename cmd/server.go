@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/ega-forever/otus_go/internal/server"
+	"github.com/ega-forever/otus_go/internal/shared"
 	"github.com/spf13/cobra"
 	"log"
-	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 )
 
 func getServerCmd() *cobra.Command {
@@ -22,41 +20,31 @@ func getServerCmd() *cobra.Command {
 		Long:  `the telnet server`,
 		Run: func(cmd *cobra.Command, args []string) {
 
+			serverInstance, err := server.New(address, port)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			serverInstance.Listen()
+
 			wg := sync.WaitGroup{}
-
-			closed := false
-
 			wg.Add(1)
-			sigs := make(chan os.Signal, 1)
-
-			signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-			signal.Notify(sigs, os.Interrupt, syscall.SIGTERM)
-
-			listener := server.StartServer(address, port)
+			exitChan := shared.ListenExitSignal()
 
 			go func() {
-				<-sigs
-				closed = true
-				listener.Close()
-				wg.Done()
-			}()
-
-			go func() {
-				msg := make([]byte, 1024, 1024)
 				for {
-					length, fromAddr, err := listener.ReadFromUDP(msg)
-
-					if closed {
-						return
+					select {
+					case c := <-serverInstance.MsgC:
+						fmt.Printf("Message from %s: %s\n", c.Address, c.Msg)
+					case <-exitChan:
+						{
+							wg.Done()
+							_ = serverInstance.Listener.Close()
+						}
 					}
-
-					if err != nil {
-						log.Fatalf("Error emitted %s", err)
-					}
-					fmt.Printf("Message from %s with length %d: %s\n", fromAddr.String(), length, string(msg))
 				}
 			}()
-
 			wg.Wait()
 		},
 	}

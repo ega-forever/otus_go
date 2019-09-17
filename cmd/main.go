@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
 	// log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"os"
+	"log"
 )
 
 func init() {
@@ -27,7 +26,6 @@ var rootCmd = &cobra.Command{
 func main() {
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }

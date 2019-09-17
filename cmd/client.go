@@ -3,11 +3,11 @@ package main
 import (
 	"bufio"
 	"github.com/ega-forever/otus_go/internal/client"
+	"github.com/ega-forever/otus_go/internal/shared"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 )
 
 func getClientCmd() *cobra.Command {
@@ -21,30 +21,45 @@ func getClientCmd() *cobra.Command {
 		Long:  `the telnet client`,
 		Run: func(cmd *cobra.Command, args []string) {
 
+			clientInstance, err := client.New(address, port)
+
+			if err != nil {
+				log.Fatalf(err.Error())
+			}
+
+			clientInstance.Ping(2000)
+
 			wg := sync.WaitGroup{}
-
-			closed := false
-
 			wg.Add(1)
-			sigs := make(chan os.Signal, 1)
-
-			signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-			signal.Notify(sigs, os.Interrupt, syscall.SIGTERM)
-
-			connection := client.StartClient(address, port)
+			exitChan := shared.ListenExitSignal()
 
 			go func() {
-				<-sigs
-				closed = true
-				connection.Close()
-				wg.Done()
+				for {
+					select {
+					case <-exitChan:
+						{
+							_ = clientInstance.Connection.Close()
+							wg.Done()
+						}
+					case err := <-clientInstance.ErrC:
+						log.Println(err)
+						_ = clientInstance.Connection.Close()
+						wg.Done()
+					}
+				}
 			}()
 
 			go func() {
 				reader := bufio.NewReader(os.Stdin)
+
 				for {
 					text, _ := reader.ReadBytes('\n')
-					_, _ = connection.Write(text)
+					_, err := clientInstance.Connection.Write([]byte(string(text) + "\n"))
+
+					if err != nil {
+						log.Fatal(err)
+					}
+
 				}
 			}()
 
