@@ -1,0 +1,78 @@
+syntax = "proto3";
+package event;
+
+message Event {
+    int64 id = 1;
+    string text = 2;
+    int64 timestamp = 3;
+}
+
+message EventList {
+    repeated Event events = 1;
+}
+
+message CreateEventReq {
+    Event event = 1;
+}
+
+message CreateEventRes {
+    oneof result {
+        Event event = 1;
+        string error = 2;
+    }
+}
+
+message UpdateEventReq {
+    Event event = 1;
+}
+
+message UpdateEventRes {
+    oneof result {
+        Event event = 1;
+        string error = 2;
+    }
+}
+
+message DeleteEventReq {
+    int64 id = 1;
+}
+
+message DeleteEventRes {
+    oneof result {
+        int64 event = 1;
+        string error = 2;
+    }
+}
+
+
+message GetEventReq {
+    int64 id = 1;
+}
+
+message GetEventRes {
+    oneof result {
+        Event event = 1;
+        string error = 2;
+    }
+}
+
+
+message ListEventReq {
+}
+
+message ListEventRes {
+    oneof result {
+        EventList events = 1;
+        string error = 2;
+    }
+}
+
+service EventService {
+
+    rpc CreateEvent (CreateEventReq) returns (CreateEventRes);
+    rpc UpdateEvent (UpdateEventReq) returns (UpdateEventRes);
+    rpc DeleteEvent (DeleteEventReq) returns (DeleteEventRes);
+    rpc GetEvent (GetEventReq) returns (GetEventRes);
+    rpc ListEvents (ListEventReq) returns (ListEventRes);
+
+}

@@ -17,7 +17,7 @@ clean:
 	rm -f $(BINARY_NAME)
 	rm -f $(BINARY_UNIX)
 compile_proto:
-	protoc proto/event.proto --go_out=plugins=grpc:.
+	protoc --go_out=plugins=grpc:internal/protocol/grpc api/*.proto
 run:
-	$(GOBUILD) -o $(BINARY_NAME) -v cmd/main.go
+	$(GOBUILD) -o $(BINARY_NAME) -v main.go
 	./$(BINARY_NAME)

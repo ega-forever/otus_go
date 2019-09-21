@@ -1,8 +1,8 @@
-package main
+package cmd
 
-import (
+/*import (
 	"github.com/ega-forever/otus_go/internal"
-	eventpb "github.com/ega-forever/otus_go/proto"
+	grpc2 "github.com/ega-forever/otus_go/internal/protocol/grpc"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -37,10 +37,11 @@ func main() {
 	grpcServer := grpc.NewServer()
 	srv := internal.NewEventService()
 
-	eventpb.RegisterEventServiceServer(grpcServer, srv)
+	grpc2.RegisterEventServiceServer(grpcServer, srv)
 
 	log.Info("hosting server on: ", listen.Addr().String())
 	if err := grpcServer.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
 }
+*/
