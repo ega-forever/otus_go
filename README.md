@@ -15,6 +15,7 @@ The env vars can be obtained from global environment, or via .env file (which sh
 | --- | --- | --- | --- |
 | PORT | number | 8080 |the web app port
 | LOG_LEVEL | number, 1-6 | 6 |the logging level
+| DB_URI | string | postgres://user:123@localhost:5432/otus | the postgres connection string
 
 ### Build
 
@@ -26,7 +27,8 @@ The env vars can be obtained from global environment, or via .env file (which sh
 
 #### Server
 
-```calendar grpc_server```
+run server with memory storage ```calendar grpc_server memory```
+run server with postgres storage ```calendar grpc_server postgres```
 
 #### Client
 
