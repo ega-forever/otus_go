@@ -2,12 +2,14 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/ega-forever/otus_go/internal/client"
 	"github.com/ega-forever/otus_go/internal/shared"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"sync"
+	"syscall"
 )
 
 func getClientCmd() *cobra.Command {
@@ -21,13 +23,11 @@ func getClientCmd() *cobra.Command {
 		Long:  `the telnet client`,
 		Run: func(cmd *cobra.Command, args []string) {
 
-			clientInstance, err := client.New(address, port)
+			clientInstance, err := client.New(address, port, 10000)
 
 			if err != nil {
 				log.Fatalf(err.Error())
 			}
-
-			clientInstance.Ping(2000)
 
 			wg := sync.WaitGroup{}
 			wg.Add(1)
@@ -41,10 +41,15 @@ func getClientCmd() *cobra.Command {
 							_ = clientInstance.Connection.Close()
 							wg.Done()
 						}
-					case err := <-clientInstance.ErrC:
-						log.Println(err)
-						_ = clientInstance.Connection.Close()
-						wg.Done()
+					case <-clientInstance.Ctx.Done():
+						{
+
+							err := clientInstance.Ctx.Err()
+							if err != nil {
+								fmt.Println("server is down")
+								exitChan <- syscall.SIGTERM
+							}
+						}
 					}
 				}
 			}()
@@ -54,12 +59,11 @@ func getClientCmd() *cobra.Command {
 
 				for {
 					text, _ := reader.ReadBytes('\n')
-					_, err := clientInstance.Connection.Write([]byte(string(text) + "\n"))
+					_, err := clientInstance.Connection.Write(text)
 
 					if err != nil {
 						log.Fatal(err)
 					}
-
 				}
 			}()
 

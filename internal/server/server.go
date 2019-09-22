@@ -1,9 +1,11 @@
 package server
 
 import (
+	"bufio"
+	"fmt"
+	"log"
 	"net"
 	"strconv"
-	"strings"
 )
 
 type ServerMsg struct {
@@ -14,28 +16,35 @@ type ServerMsg struct {
 type Server struct {
 	ErrC     chan error
 	MsgC     chan ServerMsg
-	Address  *net.UDPAddr
-	Listener *net.UDPConn
+	Address  *net.TCPAddr
+	Conn     *net.TCPConn
+	Listener *net.TCPListener
 }
 
 func New(address string, port int) (*Server, error) {
 
-	addr, err := net.ResolveUDPAddr("udp", address+":"+strconv.Itoa(port))
+	addr, err := net.ResolveTCPAddr("tcp", address+":"+strconv.Itoa(port))
 
 	if err != nil {
 		return nil, err
 	}
 
-	listener, err := net.ListenUDP("udp", addr)
+	listener, err := net.ListenTCP("tcp", addr)
 
 	if err != nil {
 		return nil, err
+	}
+
+	tcpConn, err := listener.AcceptTCP()
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	errChannel := make(chan error, 1)
 	msgChan := make(chan ServerMsg)
 
-	server := Server{errChannel, msgChan, addr, listener}
+	server := Server{errChannel, msgChan, addr, tcpConn, listener}
 
 	return &server, nil
 }
@@ -43,33 +52,24 @@ func New(address string, port int) (*Server, error) {
 func (server *Server) Listen() {
 
 	go func() {
-		msg := make([]byte, 1024)
 		for {
-			_, fromAddress, err := server.Listener.ReadFromUDP(msg)
+			fmt.Println("scan opened")
+			scanner := bufio.NewScanner(server.Conn)
 
-			msgs := strings.Split(strings.Trim(string(msg), "\x00"), "\n")
+			for scanner.Scan() {
+				text := scanner.Text()
+				server.MsgC <- ServerMsg{text, server.Conn.RemoteAddr().String()}
+			}
+			fmt.Println("scan closed")
 
-			isPing := false
-			userMessage := ""
+			tcpConn, err := server.Listener.AcceptTCP()
 
-			for _, msgStr := range msgs {
-
-				if msgStr == "ping" {
-					isPing = true
-				} else if len(msgStr) > 0 {
-					userMessage = msgStr
-				}
+			if err != nil {
+				server.ErrC <- err
+				return
 			}
 
-			if err == nil && len(userMessage) > 0 {
-				server.MsgC <- ServerMsg{userMessage, fromAddress.String()}
-			}
-
-			if isPing {
-				_, _ = server.Listener.WriteToUDP([]byte("pong"), fromAddress)
-			}
-
-			msg = make([]byte, 1024)
+			server.Conn = tcpConn
 		}
 	}()
 }

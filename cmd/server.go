@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/ega-forever/otus_go/internal/server"
 	"github.com/ega-forever/otus_go/internal/shared"
 	"github.com/spf13/cobra"
@@ -36,7 +35,9 @@ func getServerCmd() *cobra.Command {
 				for {
 					select {
 					case c := <-serverInstance.MsgC:
-						fmt.Printf("Message from %s: %s\n", c.Address, c.Msg)
+						log.Printf("Message from %s: %s\n", c.Address, c.Msg)
+					case e := <-serverInstance.ErrC:
+						log.Fatalf("Gor error %s\n", e.Error())
 					case <-exitChan:
 						{
 							wg.Done()
