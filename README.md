@@ -16,8 +16,22 @@ The env vars can be obtained from global environment, or via .env file (which sh
 | PORT | number | 8080 |the web app port
 | LOG_LEVEL | number, 1-6 | 6 |the logging level
 
-### RUN
+### Build
 
 ```bash
->>> make run
+>>> make build
 ```
+
+### Available commands
+
+#### Server
+
+```calendar grpc_server```
+
+#### Client
+
+create event: ```calendar grpc_client create <text> <timestamp>```
+update event: ```calendar grpc_client update <id> <text> <timestamp>```
+get event: ```calendar grpc_client get <id>```
+delete event: ```calendar grpc_client delete <id>```
+list events: ```calendar grpc_client list```
