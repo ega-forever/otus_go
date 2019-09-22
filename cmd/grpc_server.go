@@ -37,19 +37,3 @@ var GrpcServerCmd = &cobra.Command{
 
 	},
 }
-
-func init() {
-
-	viper.AddConfigPath(".")
-	viper.SetConfigFile(".env")
-
-	viper.SetDefault("LOG_LEVEL", 30)
-	viper.SetDefault("RPC_URI", "127.0.0.1:8081")
-
-	viper.ReadInConfig()
-	viper.AutomaticEnv()
-
-	logLevel := viper.GetInt("LOG_LEVEL")
-	log.SetFormatter(&log.JSONFormatter{})
-	log.SetLevel(log.Level(logLevel))
-}

@@ -48,7 +48,7 @@ func (server *EventServer) UpdateEvent(ctx context.Context, req *event.UpdateEve
 
 	resp := &event.UpdateEventRes{
 		Result: &event.UpdateEventRes_Event{
-			Event: &event.Event{Id: ev.Id, Text: ev.Text},
+			Event: &event.Event{Id: ev.Id, Text: ev.Text, Timestamp: ev.Timestamp},
 		},
 	}
 
@@ -67,7 +67,7 @@ func (server *EventServer) GetEvent(ctx context.Context, req *event.GetEventReq)
 
 	resp := &event.GetEventRes{
 		Result: &event.GetEventRes_Event{
-			Event: &event.Event{Id: ev.Id, Text: ev.Text},
+			Event: &event.Event{Id: ev.Id, Text: ev.Text, Timestamp: ev.Timestamp},
 		},
 	}
 

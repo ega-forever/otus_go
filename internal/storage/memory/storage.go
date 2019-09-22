@@ -16,7 +16,7 @@ func New() *Storage {
 
 func (storage *Storage) SaveEvent(ctx context.Context, event *models.Event) (*models.Event, error) {
 
-	id := int64(len(storage.events))
+	id := int64(len(storage.events)) + 1
 	ev := models.Event{Id: id, Text: event.Text, Timestamp: event.Timestamp}
 
 	storage.events[id] = &ev
