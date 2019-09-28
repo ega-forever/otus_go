@@ -26,18 +26,39 @@ func New(uri string) (*Queue, error) {
 		return nil, err
 	}
 
-	q, err := ch.QueueDeclare(
-		"events", // name
-		false,    // durable
-		false,    // delete when unused
-		true,     // exclusive
-		false,    // noWait
-		nil,      // arguments
+	err = ch.ExchangeDeclare(
+		"platform", // name
+		"topic",    // type
+		true,       // durable
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
 	)
 
 	if err != nil {
 		return nil, err
 	}
+
+	q, err := ch.QueueDeclare(
+		"events_publisher", // name
+		false,              // durable
+		false,              // delete when unused
+		true,               // exclusive
+		false,              // noWait
+		nil,                // arguments
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = ch.QueueBind(
+		q.Name,     // queue name
+		"events",   // routing key
+		"platform", // exchange
+		false,
+		nil)
 
 	return &Queue{conn: conn, ch: ch, q: &q}, nil
 }
@@ -51,10 +72,10 @@ func (q *Queue) PushEvent(event *models.Event) error {
 	}
 
 	err = q.ch.Publish(
-		"",       // exchange
-		"events", // routing key
-		false,    // mandatory
-		false,    // immediate
+		"platform", // exchange
+		"events",   // routing key
+		false,      // mandatory
+		false,      // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			ReplyTo:     q.q.Name,

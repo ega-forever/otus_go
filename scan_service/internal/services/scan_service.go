@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"github.com/ega-forever/otus_go/scan_service/internal/domain/interfaces"
+	"log"
 	"time"
 )
 
@@ -22,7 +23,7 @@ func New(storage interfaces.EventStorage, queue interfaces.EventQueue) *ScanServ
 }
 
 func (ss *ScanService) scan(timestamp int64) error {
-	// todo scan table
+
 	events, err := ss.storage.FindEventsAfterTimestamp(timestamp)
 
 	if err != nil {
@@ -45,7 +46,7 @@ func (ss *ScanService) Job(seconds time.Duration, timestamp int64) {
 
 	go func() {
 
-		timeout := time.NewTimer(time.Second * seconds)
+		timeout := time.NewTicker(time.Second * seconds)
 
 		for {
 
@@ -58,7 +59,8 @@ func (ss *ScanService) Job(seconds time.Duration, timestamp int64) {
 					return
 				}
 
-				timeout = time.NewTimer(time.Minute * seconds)
+				log.Println("pushed events")
+
 			case <-ss.Ctx.Done():
 				return
 			}
