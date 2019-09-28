@@ -1,6 +1,8 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+)
 
 var RootCmd = &cobra.Command{
 	Use:   "calendar",
@@ -8,6 +10,6 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(GrpcClientCmd)
-	RootCmd.AddCommand(GrpcServerCmd)
+	RootCmd.AddCommand(FillCmd)
+	RootCmd.AddCommand(ScanCmd)
 }
