@@ -5,8 +5,8 @@ import (
 )
 
 var RootCmd = &cobra.Command{
-	Use:   "calendar",
-	Short: "calendar service",
+	Use:   "scan",
+	Short: "scan service",
 }
 
 func init() {

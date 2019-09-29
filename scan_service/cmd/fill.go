@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/ega-forever/otus_go/scan_service/internal/domain/models"
 	db "github.com/ega-forever/otus_go/scan_service/internal/storage/sql"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"math/rand"
 	"strconv"
 	"time"
@@ -39,7 +39,7 @@ var FillCmd = &cobra.Command{
 		timestampMin := time.Now().Unix() - 86400*1000
 		timestampMax := time.Now().Unix()
 		for i := 0; i < amount; i++ {
-			event := models.Event{Text: "random", Timestamp: rand.Int63n(timestampMax-timestampMin) + timestampMin} // todo random
+			event := models.Event{Text: "random", Timestamp: rand.Int63n(timestampMax-timestampMin) + timestampMin}
 			_, err := conn.SaveEvent(&event)
 			if err != nil {
 				log.Fatal(err)

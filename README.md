@@ -1,11 +1,7 @@
-## Product simple CRUD backend
+## Event notification services
 
 ### Description
-The backend app for running simple product CRUD GRPC app.
-
-### Endpoints
-
-All endpoints are available as proto files in proto folder.
+The backend services for scanning and reminding about upcoming events
 
 ### Env variables
 
@@ -13,27 +9,29 @@ The env vars can be obtained from global environment, or via .env file (which sh
 
 | variable | type | default | description |
 | --- | --- | --- | --- |
-| PORT | number | 8080 |the web app port
 | LOG_LEVEL | number, 1-6 | 6 |the logging level
 | DB_URI | string | postgres://user:123@localhost:5432/otus | the postgres connection string
+| QUEUE_URI | string | amqp://guest:guest@localhost:5672 | the rabbitmq connection string
 
-### Build
+### Build scan service
 
 ```bash
->>> make build
+>>> make build_scan
+```
+
+### Build notification service
+
+```bash
+>>> make build_notification
 ```
 
 ### Available commands
 
-#### Server
+#### scan_service
 
-run server with memory storage ```calendar grpc_server memory```
-run server with postgres storage ```calendar grpc_server postgres```
+run scan service and fill db with fake events ```scan_service fill <amount_of_events>```
+run scan service ```scan_service scan <scan_period_in_seconds> <earliest_timestamp>```
 
-#### Client
+#### notification_service
 
-create event: ```calendar grpc_client create <text> <timestamp>```
-update event: ```calendar grpc_client update <id> <text> <timestamp>```
-get event: ```calendar grpc_client get <id>```
-delete event: ```calendar grpc_client delete <id>```
-list events: ```calendar grpc_client list```
+listen to events on rmq: ```service_notification```

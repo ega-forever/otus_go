@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/ega-forever/otus_go/scan_service/internal/domain/models"
 	"github.com/jackc/pgx/v4"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 type Storage struct {

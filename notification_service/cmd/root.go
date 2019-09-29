@@ -10,6 +10,5 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(CleanCmd)
 	RootCmd.AddCommand(ScanCmd)
 }

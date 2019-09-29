@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 	"github.com/ega-forever/otus_go/scan_service/internal/domain/interfaces"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 

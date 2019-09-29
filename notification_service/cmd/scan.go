@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/ega-forever/otus_go/notification_service/internal/queue"
 	"github.com/ega-forever/otus_go/notification_service/internal/services"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/signal"
 	"sync"

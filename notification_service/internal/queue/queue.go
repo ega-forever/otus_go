@@ -3,8 +3,8 @@ package queue
 import (
 	"encoding/json"
 	"github.com/ega-forever/otus_go/notification_service/internal/domain/models"
+	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
-	"log"
 )
 
 type Queue struct {

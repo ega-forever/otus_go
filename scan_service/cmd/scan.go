@@ -4,9 +4,9 @@ import (
 	"github.com/ega-forever/otus_go/scan_service/internal/queue"
 	"github.com/ega-forever/otus_go/scan_service/internal/services"
 	db "github.com/ega-forever/otus_go/scan_service/internal/storage/sql"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"os/signal"
 	"strconv"
@@ -18,7 +18,6 @@ import (
 var ScanCmd = &cobra.Command{
 	Use: "scan",
 	Run: func(cmd *cobra.Command, args []string) {
-		// todo implement
 
 		if len(args) < 2 {
 			log.Fatal("specify scan_period earliest_timestamp")
