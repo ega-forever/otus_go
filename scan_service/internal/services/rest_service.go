@@ -21,7 +21,7 @@ func NewRestService(port int) *RestService {
 	r.HandleFunc("/", handleRootEndpoint)
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "127.0.0.1:" + strconv.Itoa(port),
+		Addr:         "0.0.0.0:" + strconv.Itoa(port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

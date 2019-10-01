@@ -10,10 +10,13 @@ RUN CGO_ENABLED=0 make build_notification
 
 ###
 
-FROM golang:1.13-alpine as runner
+FROM ubuntu:18.04 as runner
 
 WORKDIR /app
+ENV REST_PORT=8080
 
 COPY --from=builder /app/service_notification .
-ENTRYPOINT ["./service_notification"]
-CMD ["scan"]
+COPY .deploy/wait-for-it.sh .
+
+EXPOSE 8080
+CMD ["./service_notification", "scan"]

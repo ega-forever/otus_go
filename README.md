@@ -35,3 +35,16 @@ run scan service ```scan_service scan <scan_period_in_seconds> <earliest_timesta
 #### notification_service
 
 listen to events on rmq: ```service_notification```
+
+### build compose
+
+```docker-compose build```
+
+### run compose
+
+```docker-compose run```
+
+### health checks
+
+the scan service expose the endpoint / on default port ```8080```
+the notification service expose the endpoint / on default port ```8081```
