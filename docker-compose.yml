@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  scan:
+    build:
+      context: .
+      dockerfile: scan_Dockerfile
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    depends_on:
+      - "db"
+      - "queue"
+    environment:
+      - QUEUE_URI=amqp://guest:guest@queue:5672
+      - DB_URI=postgres://user:123@db:5432/otus
+    command: ["./wait-for-it.sh", "db:5432", "queue:5672","--", "./service_scan", "scan", "30", "1539992129"]
+  notification:
+    build:
+      context: .
+      dockerfile: notification_Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "queue"
+      - "scan"
+    environment:
+      - QUEUE_URI=amqp://guest:guest@queue:5672
+  db:
+    image: postgres:9.6
+    container_name: "postgres_db"
+    environment:
+      - POSTGRES_DB=otus
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=123
+    ports:
+      - "5432:5432"
+  queue:
+    image: rabbitmq:3.7
+    container_name: "rabbitmq_queue"
+    ports:
+      - "5672:5672"

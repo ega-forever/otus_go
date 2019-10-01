@@ -11,6 +11,7 @@ func init() {
 	viper.AddConfigPath(".")
 	viper.SetConfigFile(".env")
 
+	viper.SetDefault("REST_PORT", 8080)
 	viper.SetDefault("LOG_LEVEL", 30)
 	viper.SetDefault("QUEUE_URI", "amqp://guest:guest@localhost:5672")
 	viper.SetDefault("DB_URI", "postgres://user:123@localhost:5432/otus")

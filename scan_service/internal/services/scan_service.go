@@ -14,7 +14,7 @@ type ScanService struct {
 	queue     interfaces.EventQueue
 }
 
-func New(storage interfaces.EventStorage, queue interfaces.EventQueue) *ScanService {
+func NewScanService(storage interfaces.EventStorage, queue interfaces.EventQueue) *ScanService {
 
 	ctx := context.Background()
 	ctx, cancelFunc := context.WithCancel(ctx)

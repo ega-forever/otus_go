@@ -1,0 +1,19 @@
+FROM golang:1.13 as builder
+
+WORKDIR /app
+
+COPY notification_service ./notification_service
+COPY Makefile .
+COPY go.mod .
+
+RUN CGO_ENABLED=0 make build_notification
+
+###
+
+FROM golang:1.13-alpine as runner
+
+WORKDIR /app
+
+COPY --from=builder /app/service_notification .
+ENTRYPOINT ["./service_notification"]
+CMD ["scan"]

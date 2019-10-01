@@ -23,8 +23,17 @@ var ScanCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		scanServiceInstance := services.New(queueConn)
+		scanServiceInstance := services.NewScanService(queueConn)
 		scanServiceInstance.Job()
+
+		restPort := viper.GetInt("REST_PORT")
+
+		restServiceInstance := services.NewRestService(restPort)
+		err = restServiceInstance.Start()
+
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		sigs := make(chan os.Signal, 1)
 

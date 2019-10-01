@@ -51,8 +51,17 @@ var ScanCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		scanServiceInstance := services.New(dbConn, queueConn)
+		restPort := viper.GetInt("REST_PORT")
+
+		scanServiceInstance := services.NewScanService(dbConn, queueConn)
 		scanServiceInstance.Job(time.Duration(seconds), int64(timestamp))
+
+		restServiceInstance := services.NewRestService(restPort)
+		err = restServiceInstance.Start()
+
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		sigs := make(chan os.Signal, 1)
 
@@ -66,8 +75,10 @@ var ScanCmd = &cobra.Command{
 				select {
 				case <-scanServiceInstance.Ctx.Done():
 					wg.Done()
+					_ = restServiceInstance.Disconnect()
 				case <-sigs:
 					wg.Done()
+					_ = restServiceInstance.Disconnect()
 				}
 			}
 		}()

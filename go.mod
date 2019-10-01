@@ -7,6 +7,7 @@ require (
 	github.com/corpix/uarand v0.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.1
+	github.com/gorilla/mux v1.7.3
 	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428 // indirect
 	github.com/jackc/pgx/v4 v4.0.1
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
