@@ -2,7 +2,7 @@ version: '2'
 
 services:
   scan:
-    image: scan_service:1.0.0
+    image: egorzuev/scan_service:1.0.0
     #build:
     #  context: .
     #  dockerfile: scan_Dockerfile
@@ -16,7 +16,7 @@ services:
       - DB_URI=postgres://user:123@db:5432/otus
     command: ["./wait-for-it.sh", "db:5432", "queue:5672","--", "./service_scan", "scan", "30", "1539992129"]
   notification:
-    image: notification_service:1.0.0
+    image: egorzuev/notification_service:1.0.0
     #build:
     #  context: .
     #  dockerfile: notification_Dockerfile
