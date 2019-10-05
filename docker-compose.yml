@@ -9,6 +9,7 @@ services:
       - "db"
       - "queue"
     environment:
+      - RPC_URI=localhost:8082
       - QUEUE_URI=amqp://guest:guest@queue:5672
       - DB_URI=postgres://user:123@db:5432/otus
     command: ["./wait-for-it.sh", "db:5432", "queue:5672","--", "./service_rest", "grpc_server", "database"]

@@ -3,6 +3,7 @@ module github.com/ega-forever/otus_go
 go 1.12
 
 require (
+	github.com/DATA-DOG/godog v0.7.13
 	github.com/coreos/go-systemd v0.0.0-20190719114852-fd7a80b32e1f // indirect
 	github.com/corpix/uarand v0.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
