@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/ega-forever/otus_go/internal/domain/models"
+	"github.com/ega-forever/otus_go/rest_service/internal/domain/models"
 	"github.com/jackc/pgx/v4"
 	"log"
 )

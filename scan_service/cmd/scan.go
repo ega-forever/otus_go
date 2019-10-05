@@ -20,16 +20,16 @@ var ScanCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) < 2 {
-			log.Fatal("specify scan_period earliest_timestamp")
+			log.Fatal("specify scan_period earliest period")
 		}
 
-		seconds, err := strconv.Atoi(args[0])
+		scanPeriodSeconds, err := strconv.Atoi(args[0])
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		timestamp, err := strconv.Atoi(args[1])
+		eventCreatedEarliestSeconds, err := strconv.Atoi(args[1])
 
 		if err != nil {
 			log.Fatal(err)
@@ -54,7 +54,7 @@ var ScanCmd = &cobra.Command{
 		restPort := viper.GetInt("REST_PORT")
 
 		scanServiceInstance := services.NewScanService(dbConn, queueConn)
-		scanServiceInstance.Job(time.Duration(seconds), int64(timestamp))
+		scanServiceInstance.Job(time.Duration(scanPeriodSeconds), int64(eventCreatedEarliestSeconds))
 
 		restServiceInstance := services.NewRestService(restPort)
 		err = restServiceInstance.Start()

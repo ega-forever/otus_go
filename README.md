@@ -30,7 +30,7 @@ The env vars can be obtained from global environment, or via .env file (which sh
 #### scan_service
 
 run scan service and fill db with fake events ```scan_service fill <amount_of_events>```
-run scan service ```scan_service scan <scan_period_in_seconds> <earliest_timestamp>```
+run scan service ```scan_service scan <scan_period_in_seconds> <events_created_in_less_than_seconds>```
 
 #### notification_service
 

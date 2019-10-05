@@ -22,9 +22,11 @@ func NewScanService(storage interfaces.EventStorage, queue interfaces.EventQueue
 	return &ScanService{Ctx: ctx, ctxCancel: cancelFunc, storage: storage, queue: queue}
 }
 
-func (ss *ScanService) scan(timestamp int64) error {
+func (ss *ScanService) scan(eventCreatedEarliestSeconds int64) (int, error) {
 
-	events, err := ss.storage.FindEventsAfterTimestamp(timestamp)
+	startTimestamp := (time.Now().Unix() - eventCreatedEarliestSeconds) * 1000
+
+	events, err := ss.storage.FindEventsAfterTimestamp(startTimestamp)
 
 	if err != nil {
 		ss.ctxCancel()
@@ -34,32 +36,34 @@ func (ss *ScanService) scan(timestamp int64) error {
 		err := ss.queue.PushEvent(ev)
 
 		if err != nil {
-			return err
+			return 0, err
 		}
 
 	}
 
-	return nil
+	return len(events), nil
 }
 
-func (ss *ScanService) Job(seconds time.Duration, timestamp int64) {
+func (ss *ScanService) Job(scanSeconds time.Duration, eventCreatedEarliestSeconds int64) {
 
 	go func() {
 
-		timeout := time.NewTicker(time.Second * seconds)
+		timeout := time.NewTicker(time.Second * scanSeconds)
 
 		for {
 
 			select {
 			case <-timeout.C:
-				err := ss.scan(timestamp)
+				count, err := ss.scan(eventCreatedEarliestSeconds)
 
 				if err != nil {
 					ss.ctxCancel()
 					return
 				}
 
-				log.Println("pushed events")
+				if count > 0 {
+					log.Printf("pushed %d events", count)
+				}
 
 			case <-ss.Ctx.Done():
 				return
