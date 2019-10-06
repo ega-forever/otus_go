@@ -1,6 +1,18 @@
 version: '2'
 
 services:
+  integration_tests:
+    build:
+      context: .
+      dockerfile: test_Dockerfile
+    environment:
+      TESTS_AMQP_DSN: "amqp://guest:guest@queue:5672/"
+      REST_HOST: "rest"
+    depends_on:
+      - "rest"
+      - "scan"
+      - "notification"
+    command: ["./wait-for-it.sh", "db:5432", "queue:5672", "rest:8082","--", "go", "test", "./integration_tests"]
   rest:
     image: egorzuev/rest_service:1.0.1
     ports:
@@ -9,7 +21,7 @@ services:
       - "db"
       - "queue"
     environment:
-      - RPC_URI=localhost:8082
+      - RPC_URI=0.0.0.0:8082
       - QUEUE_URI=amqp://guest:guest@queue:5672
       - DB_URI=postgres://user:123@db:5432/otus
     command: ["./wait-for-it.sh", "db:5432", "queue:5672","--", "./service_rest", "grpc_server", "database"]
@@ -23,7 +35,7 @@ services:
     environment:
       - QUEUE_URI=amqp://guest:guest@queue:5672
       - DB_URI=postgres://user:123@db:5432/otus
-    command: ["./wait-for-it.sh", "db:5432", "queue:5672","--", "./service_scan", "scan", "30", "1539992129"]
+    command: ["./wait-for-it.sh", "db:5432", "queue:5672","--", "./service_scan", "scan", "10", "20"]
   notification:
     image: egorzuev/notification_service:1.0.1
     ports:

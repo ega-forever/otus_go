@@ -7,5 +7,7 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
-COPY . .
-CMD ["go", "test"]
+COPY integration_tests ./integration_tests
+COPY .deploy/wait-for-it.sh .
+
+CMD ["go", "test", "./integration_tests"]

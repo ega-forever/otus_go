@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	event "github.com/ega-forever/otus_go/integration_tests/api"
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"os"
 	"sync"
@@ -89,10 +90,9 @@ func (test *notifyTest) stopConsuming(interface{}, error) {
 	test.messages = nil
 }
 
-func (test *notifyTest) iAbleToCreateRecord(text string, rpcURI string) error {
-
-	test.rpcURI = rpcURI
-	conn, err := grpc.Dial(rpcURI, grpc.WithInsecure())
+func (test *notifyTest) iAbleToCreateRecord(text string, port string) error {
+	test.rpcURI = viper.GetString("REST_HOST") + ":" + port
+	conn, err := grpc.Dial(test.rpcURI, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
@@ -157,11 +157,15 @@ func (test *notifyTest) iReceiveEventWithText(text string) error {
 }
 
 func FeatureContext(s *godog.Suite) {
+
+	viper.SetDefault("REST_HOST", "localhost")
+	viper.AutomaticEnv()
+
 	test := new(notifyTest)
 
 	s.BeforeScenario(test.startConsuming)
 
-	s.Step(`^I create new event "([^"]*)" and request to "([^"]*)"$`, test.iAbleToCreateRecord)
+	s.Step(`^I create new event "([^"]*)" and request to port "([^"]*)"$`, test.iAbleToCreateRecord)
 	s.Step(`^the record should be created`, test.isRecordCreated)
 	s.Step(`^I receive event with text "([^"]*)"$`, test.iReceiveEventWithText)
 

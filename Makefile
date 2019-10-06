@@ -14,9 +14,9 @@ build_notification:
 build_rest:
 	$(GOBUILD) -o $(BINARY_NAME)_rest -v rest_service/main.go
 build_docker:
-	docker build -f notification_Dockerfile -t egorzuev/notification_service:1.0.0 .
-	docker build -f scan_Dockerfile -t egorzuev/scan_service:1.0.0 .
-	docker build -f rest_Dockerfile -t egorzuev/rest_service:1.0.0 .
+	docker build -f notification_Dockerfile -t egorzuev/notification_service:1.0.1 .
+	docker build -f scan_Dockerfile -t egorzuev/scan_service:1.0.1 .
+	docker build -f rest_Dockerfile -t egorzuev/rest_service:1.0.1 .
 clean:
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)_notification

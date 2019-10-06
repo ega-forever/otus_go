@@ -1,17 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"github.com/DATA-DOG/godog"
 	"os"
 	"testing"
-	"time"
-
-	"github.com/DATA-DOG/godog"
 )
 
 func TestMain(m *testing.M) {
-	fmt.Println("Wait 5s for service availability...")
-	time.Sleep(5 * time.Second)
 
 	status := godog.RunWithOptions("integration", func(s *godog.Suite) {
 		FeatureContext(s)

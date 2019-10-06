@@ -9,6 +9,6 @@ Feature: Email notification sending
 	I want to receive event from notifications queue
 
 	Scenario: Notification event is received
-		When I create new event "super event" and request to "localhost:8082"
+		When I create new event "super event" and request to port "8082"
 		Then the record should be created
 		And I receive event with text "super event"
