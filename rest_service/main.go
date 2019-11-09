@@ -13,6 +13,7 @@ func init() {
 
 	viper.SetDefault("LOG_LEVEL", 30)
 	viper.SetDefault("RPC_URI", "127.0.0.1:8081")
+	viper.SetDefault("PROMETHEUS_URI", "127.0.0.1:8082")
 	viper.SetDefault("DB_URI", "postgres://user:123@localhost:5432/otus")
 
 	viper.ReadInConfig()

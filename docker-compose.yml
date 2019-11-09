@@ -2,16 +2,17 @@ version: '2'
 
 services:
   rest:
-    image: egorzuev/rest_service:1.0.1
+    image: egorzuev/rest_service:1.0.2
     ports:
       - "8082:8082"
     depends_on:
       - "db"
       - "queue"
     environment:
-      - RPC_URI=localhost:8082
+      - RPC_URI=rest:8082
       - QUEUE_URI=amqp://guest:guest@queue:5672
       - DB_URI=postgres://user:123@db:5432/otus
+      - PROMETHEUS_URI=rest:8083
     command: ["./wait-for-it.sh", "db:5432", "queue:5672","--", "./service_rest", "grpc_server", "database"]
   scan:
     image: egorzuev/scan_service:1.0.1
@@ -48,3 +49,35 @@ services:
     container_name: "rabbitmq_queue"
     ports:
       - "5672:5672"
+      - "15672:15672"
+  db-exporter:
+    image: wrouesnel/postgres_exporter:v0.4.1
+    depends_on:
+      - "db"
+    ports:
+      - 9187:9187
+    environment:
+      - DATA_SOURCE_NAME=postgresql://user:123@db:5432/otus?sslmode=disable
+
+  queue-exporter:
+    image: kbudde/rabbitmq-exporter
+    depends_on:
+      - "queue"
+    ports:
+      - 9999:9090
+    environment:
+      RABBIT_URL: "http://queue:15672"
+      RABBIT_USER: "guest"
+      RABBIT_PASSWORD: "guest"
+      PUBLISH_PORT: "9090"
+      OUTPUT_FORMAT: "JSON"
+      LOG_LEVEL: "debug"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ${PWD}/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+#/etc/prometheus/prometheus.yml
